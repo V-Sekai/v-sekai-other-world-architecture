@@ -39,7 +39,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path:  |
-             .scons_cache
+              .scons_cache
               emsdk
               osxcross
               jdk
@@ -88,7 +88,6 @@ jobs:
             --ci-id ${{ runner.os }}-scons-${{ matrix.platform }}-${{ matrix.target }} \
             --err \
             --token '${{ secrets.BENCHER_API_TOKEN }}' \
-            --github-actions '${{ secrets.GITHUB_TOKEN }}' \
             --file results.json \
             "hyperfine --show-output --runs 1 --export-json results.json 'just $PLATFORM_ARGS && just build-platform-target ${{ matrix.platform }} ${{ matrix.target }}'"
       - name: Upload Artifacts
