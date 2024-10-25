@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest    
     permissions:
       pull-requests: write
+      actions: write
     container:
       image: fedora:39
     env:
@@ -37,20 +38,22 @@ jobs:
 
       - name: Cache SCons cache
         uses: actions/cache@v4
+        if: always()
         with:
-          path:  |
-              .scons_cache
-              emsdk
-              osxcross
-              jdk
-              android_sdk
-              vulkan_sdk
-              mingw
-          key: ${{ runner.os }}-scons-${{ matrix.platform }}-${{ matrix.target }}
+          path: |
+            .scons_cache
+            emsdk
+            osxcross
+            jdk
+            android_sdk
+            vulkan_sdk
+            mingw
+          key: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}-${{ matrix.platform }}-${{ matrix.target }}
           restore-keys: |
-            ${{ runner.os }}-scons-${{ matrix.platform }}-${{ matrix.target }}
-            ${{ runner.os }}-scons-
-            ${{ runner.os }}
+            ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}-${{ matrix.platform }}-${{ matrix.target }}
+            ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}-${{ matrix.platform }}
+            ${{ matrix.platform }}-${{ matrix.target }}
+            ${{ matrix.platform }}
 
       - uses: bencherdev/bencher@main
 
@@ -78,7 +81,7 @@ jobs:
             bencher run \
             --project 'v-sekai-world' \
             --adapter shell_hyperfine \
-            --branch '${{ github.head_ref }}' \
+            --branch '${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}' \
             --testbed ubuntu-latest \
             --threshold-measure latency \
             --threshold-test t_test \
