@@ -89,6 +89,7 @@ jobs:
             --err \
             --token '${{ secrets.BENCHER_API_TOKEN }}' \
             --github-actions '${{ secrets.GITHUB_TOKEN }}' \
+            --ci-only-on-alert \
             --file results.json \
             "hyperfine --show-output --runs 1 --export-json results.json 'just $PLATFORM_ARGS && just build-platform-target ${{ matrix.platform }} ${{ matrix.target }}'"
       - name: Upload Artifacts
