@@ -39,7 +39,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path:  |
-             .scons_cache
+              .scons_cache
               emsdk
               osxcross
               jdk
