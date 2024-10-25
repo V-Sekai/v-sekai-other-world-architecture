@@ -18,6 +18,8 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       BENCHER_API_TOKEN: ${{ secrets.BENCHER_API_TOKEN }}
+      GODOT_BASE_BRANCH: main
+      CACHE_NAME: v-sekai-world
 
     strategy:
       fail-fast: false
@@ -48,12 +50,12 @@ jobs:
             android_sdk
             vulkan_sdk
             mingw
-          key: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}-${{ matrix.platform }}-${{ matrix.target }}
+          key: ${{ env.CACHE_NAME }}-${{ env.GODOT_BASE_BRANCH }}-${{ github.ref }}-${{ github.sha }}
           restore-keys: |
-            ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}-${{ matrix.platform }}-${{ matrix.target }}
-            ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}-${{ matrix.platform }}
-            ${{ matrix.platform }}-${{ matrix.target }}
-            ${{ matrix.platform }}
+            ${{ env.CACHE_NAME }}-${{ env.GODOT_BASE_BRANCH }}-${{ github.ref }}-${{ github.sha }}
+            ${{ env.CACHE_NAME }}-${{ env.GODOT_BASE_BRANCH }}-${{ github.ref }}
+            ${{ env.CACHE_NAME }}-${{ env.GODOT_BASE_BRANCH }}-refs/heads/${{ env.GODOT_BASE_BRANCH }}
+            ${{ env.CACHE_NAME }}-${{ env.GODOT_BASE_BRANCH }}
 
       - uses: bencherdev/bencher@main
 
