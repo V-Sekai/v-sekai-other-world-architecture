@@ -160,6 +160,13 @@ build-platform-target platform target:
           debug_symbol=yes \
           $EXTRA_FLAGS
     just handle-special-cases {{platform}} {{target}}
+    if [[ "{{target}}" == "editor" ]]; then
+        mkdir -p $WORLD_PWD/editors
+        cp -rf $WORLD_PWD/godot/bin/* $WORLD_PWD/editors
+    elif [[ "{{target}}" =~ template_* ]]; then
+        mkdir -p $WORLD_PWD/tpz
+        cp -rf $WORLD_PWD/godot/bin/* $WORLD_PWD/tpz
+    fi
 
 all-build-platform-target:
     #!/usr/bin/env bash
