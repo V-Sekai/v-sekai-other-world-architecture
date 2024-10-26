@@ -66,7 +66,7 @@
 #define RENIK_PROPERTY_STRING_FOOT_LEFT_TARGET_PATH "armature_left_foot_target"
 #define RENIK_PROPERTY_STRING_FOOT_RIGHT_TARGET_PATH "armature_right_foot_target"
 
-RenIK::RenIK(){};
+RenIK::RenIK() {};
 
 void RenIK::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_live_preview", "p_enable"),

@@ -953,6 +953,7 @@ void AnimationPlayerEditor::_scale_changed(const String &p_scale) {
 }
 
 void AnimationPlayerEditor::_update_animation() {
+	ERR_FAIL_NULL(player);
 	// the purpose of _update_animation is to reflect the current state
 	// of the animation player in the current editor..
 
@@ -1428,6 +1429,9 @@ void AnimationPlayerEditor::_current_animation_changed(const String &p_name) {
 			frame->set_value(0);
 			track_editor->set_anim_pos(0);
 			_update_animation();
+			return;
+		}
+		if (!player) {
 			return;
 		}
 		Ref<Animation> anim = player->get_animation(p_name);

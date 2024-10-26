@@ -112,6 +112,7 @@ void AnimationLibrary::_animation_changed(const StringName &p_name) {
 }
 
 void AnimationLibrary::get_animation_list(List<StringName> *p_animations) const {
+	ERR_FAIL_NULL(p_animations);
 	List<StringName> anims;
 
 	for (const KeyValue<StringName, Ref<Animation>> &E : animations) {

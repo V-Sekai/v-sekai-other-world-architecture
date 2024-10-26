@@ -15,7 +15,7 @@
           }
         },
         "command": [
-          "scons werror=no compiledb=yes dev_build=no generate_bundle=no precision=double target=editor tests=yes debug_symbols=yes"
+          "scons werror=no compiledb=yes dev_build=no generate_bundle=no precision=single target=editor tests=yes debug_symbols=yes"
         ],
       },
     ]
