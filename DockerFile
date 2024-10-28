@@ -1,0 +1,8 @@
+FROM fedora:39
+WORKDIR /app
+COPY . /app
+
+RUN dnf install -y just
+RUN just install_packages
+RUN just
+CMD ["bash"]
