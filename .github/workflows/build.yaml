@@ -98,23 +98,17 @@ jobs:
           --ci-only-on-alert \
           --file results.json \
           "hyperfine --show-output --runs 1 --export-json results.json 'just $PLATFORM_ARGS && just build-platform-target ${{ matrix.platform }} ${{ matrix.target }}'"
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-${{ matrix.platform }}-${{ matrix.target }}
-          path: godot/bin/*
 
-      - name: Upload TPZ File
-        uses: actions/upload-artifact@v4
-        with:
-          name: Godot-${{ matrix.platform }}-${{ matrix.target }}.tpz
-          path: tpz
+      - name: Fetch dependencies and Build Platform Target
+        run: |
+          cp -rf godot/bin ${{ matrix.target }}
 
-      - name: Upload Godot Editor Files
+      - name: Upload Godot Files
         uses: actions/upload-artifact@v4
         with:
-          name: Godot-${{ matrix.platform }}-${{ matrix.target }}
-          path: editor
+          name: ${{ matrix.platform }}-${{ matrix.target }}
+          path: |
+            ${{ matrix.target }}
 
   merge:
     runs-on: ubuntu-latest
@@ -124,4 +118,5 @@ jobs:
         uses: actions/upload-artifact/merge@v4
         with:
           name: v-sekai-world
+          separate-directories: true
           delete-merged: true
