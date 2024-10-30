@@ -1,0 +1,9 @@
+vsekai.local {
+	handle_path /api/v1/* {
+		reverse_proxy uro:4000
+	}
+
+	handle_path /* {
+		reverse_proxy nextjs:3000
+	}
+}

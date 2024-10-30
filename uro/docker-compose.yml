@@ -1,0 +1,87 @@
+version: "3.9"
+services:
+  database:
+    image: postgres:16.3-alpine
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: vsekai
+      POSTGRES_PASSWORD: vsekai
+    volumes:
+      - "./postgres:/var/lib/postgresql/data"
+    healthcheck:
+      test: pg_isready -U vsekai
+      interval: 1s
+      timeout: 5s
+
+  redis:
+    image: redis:7.2-alpine
+    restart: always
+    shm_size: 128mb
+    volumes:
+      - "./redis:/data"
+    healthcheck:
+      test: redis-cli ping
+      interval: 1s
+      timeout: 5s
+
+  uro:
+    build:
+      context: .
+    restart: always
+    links:
+      - database
+      - redis
+    depends_on:
+      database:
+        condition: service_healthy
+        restart: true
+      redis:
+        condition: service_healthy
+        restart: true
+    env_file:
+      - .env
+    healthcheck:
+      test: curl --fail http://uro:4000/health || exit 1
+      interval: 1s
+      timeout: 5s
+
+  nextjs:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    healthcheck:
+      test: curl --fail http://nextjs:3000/health || exit 1
+      interval: 1s
+      timeout: 5s
+    depends_on:
+      - uro
+
+  caddy:
+    image: caddy:2.8.4-alpine
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./caddy/data:/data
+      - ./caddy/config:/config
+    depends_on:
+      uro:
+        condition: service_healthy
+        restart: true
+      nextjs:
+        condition: service_healthy
+        restart: true
+
+networks:
+  uro:
+    name: "uro"
+
+volumes:
+  caddy_data:
+  caddy_config:
